@@ -144,6 +144,7 @@ abstract class TemplateEngine extends Wire implements TemplateEngineInterface
     {
         $wrapper = new InputfieldWrapper();
         $modules = wire('modules');
+        $templates = wire('templates');
 
         $f = $modules->get('InputfieldText');
         $f->name = 'templates_path';
@@ -166,6 +167,17 @@ abstract class TemplateEngine extends Wire implements TemplateEngineInterface
         $f->label = __('Global template file');
         $f->description = __('Filename of a template file that is used as main template behind the API variable');
         $f->value = $data['global_template'];
+        $wrapper->append($f);
+
+        $f = $modules->get("InputfieldAsmSelect");
+        $f->columnWidth = 100;
+        $f->label = __("Ignore global template file");
+        $f->description = __("Ignore global template file for the following templates.");
+        $f->attr("id+name",'ignored_templates');
+        foreach ($templates as $template) {
+            $f->addOption($template->name, $template->title);
+        }
+        $f->value = $data['ignored_templates'];
         $wrapper->append($f);
 
         return $wrapper;

@@ -241,7 +241,11 @@ class TemplateEngineFactory extends WireData implements Module, ConfigurableModu
         if (!$filename) {
             // No filename given, either use global template file or template file of current controller
             $globalTemplate = $engine->getConfig('global_template');
-            $template = ($globalTemplate) ? $globalTemplate : $this->wire('page')->template->name;
+            if(in_array($this->page->template->name, $engine->getConfig('ignored_templates'))) {
+                $template = $this->wire('page')->template->name;
+            } else {
+                $template = ($globalTemplate) ? $globalTemplate : $this->wire('page')->template->name;
+            }
             $engine->setFilename($template);
         }
         if (!is_file($engine->getTemplatesPath() . $engine->getFilename())) {
@@ -308,7 +312,7 @@ class TemplateEngineFactory extends WireData implements Module, ConfigurableModu
     {
         return array(
             'title' => 'Template Engine Factory',
-            'version' => 113,
+            'version' => 123,
             'author' => 'Stefan Wanzenried',
             'summary' => 'Provides ProcessWire integration for various template engines such as Twig or Smarty. ',
             'href' => 'https://processwire.com/talk/topic/6833-module-templateenginefactory/',
